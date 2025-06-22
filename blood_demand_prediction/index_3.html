@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blood Type Demand Predictor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 { color: crimson; }
+    label, input, select {
+      display: block;
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 18px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 20px;
+      color: darkgreen;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🩸 Blood Type Demand Predictor</h1>
+
+  <label for="state">State:</label>
+  <select id="state" onchange="updateHospitalOptions()">
+    <option value="">Select State</option>
+    <option value="Johor">Johor</option>
+    <option value="Kedah">Kedah</option>
+    <option value="Kelantan">Kelantan</option>
+    <option value="Melaka">Melaka</option>
+    <option value="Negeri Sembilan">Negeri Sembilan</option>
+    <option value="Pahang">Pahang</option>
+    <option value="Pulau Pinang">Pulau Pinang</option>
+    <option value="Perak">Perak</option>
+    <option value="Selangor">Selangor</option>
+    <option value="Terengganu">Terengganu</option>
+    <option value="Sabah">Sabah</option>
+    <option value="Sarawak">Sarawak</option>
+    <option value="Wilayah Persekutuan (Kuala Lumpur)">Wilayah Persekutuan (Kuala Lumpur)</option>
+  </select>
+
+  <label for="hospital">Hospital:</label>
+  <select id="hospital">
+    <option value="">Select Hospital</option>
+  </select>
+
+  <label for="date">Date:</label>
+  <input type="date" id="date" required>
+
+  <label>Total Blood Units Collected:</label>
+  <input type="number" id="blood_units" min="1" value="50">
+
+  <label>New Donors:</label>
+  <input type="number" id="don_new" min="0" value="15">
+
+  <label>Regular Donors:</label>
+  <input type="number" id="don_reg" min="0" value="30">
+
+  <button onclick="predict()">Predict Blood Demand</button>
+
+  <div id="result"></div>
+
+  <script>
+    const hospitalsByState = {
+      "Johor": [
+        "Hospital Sultanah Nora Ismail",
+        "Hospital Sultanah Aminah"
+      ],
+      "Kedah": [
+        "Hospital Sultanah Bahiyah"
+      ],
+      "Kelantan": [
+        "Hospital Raja Perempuan Zainab II"
+      ],
+      "Melaka": [
+        "Hospital Melaka"
+      ],
+      "Negeri Sembilan": [
+        "Hospital Tuanku Jaafar"
+      ],
+      "Pahang": [
+        "Hospital Tengku Ampuan Afzan",
+        "Hospital Sultan Haji Ahmad Shah"
+      ],
+      "Pulau Pinang": [
+        "Hospital Seberang Jaya",
+        "Hospital Pulau Pinang"
+      ],
+      "Perak": [
+        "Hospital Raja Permaisuri Bainun",
+        "Hospital Taiping",
+        "Hospital Seri Manjung"
+      ],
+      "Selangor": [
+        "Hospital Tengku Ampuan Rahimah"
+      ],
+      "Terengganu": [
+        "Hospital Sultanah Nur Zahirah"
+      ],
+      "Sabah": [
+        "Hospital Queen Elizabeth II",
+        "Hospital Duchess Of Kent",
+        "Hospital Tawau"
+      ],
+      "Sarawak": [
+        "Hospital Umum Sarawak",
+        "Hospital Miri",
+        "Hospital Sibu"
+      ],
+      "Wilayah Persekutuan (Kuala Lumpur)": [
+        "Pusat Darah Negara"
+      ]
+    };
+
+    function updateHospitalOptions() {
+      const state = document.getElementById("state").value;
+      const hospitalSelect = document.getElementById("hospital");
+      hospitalSelect.innerHTML = ""; // Clear options
+
+      if (state && hospitalsByState[state]) {
+        hospitalsByState[state].forEach(hospital => {
+          const option = document.createElement("option");
+          option.value = hospital;
+          option.text = hospital;
+          hospitalSelect.appendChild(option);
+        });
+      } else {
+        const defaultOption = document.createElement("option");
+        defaultOption.text = "Select Hospital";
+        hospitalSelect.appendChild(defaultOption);
+      }
+    }
+
+    async function predict() {
+      const state = document.getElementById("state").value;
+      const hospital = document.getElementById("hospital").value;
+      const date = new Date(document.getElementById("date").value);
+      const blood_units = parseInt(document.getElementById("blood_units").value);
+      const don_new = parseInt(document.getElementById("don_new").value) || 0;
+      const don_reg = parseInt(document.getElementById("don_reg").value) || 0;
+
+      const payload = {
+        state: state,
+        hospital: hospital,
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+        weekday: date.getDay(),
+        location_centre: blood_units,
+        location_mobile: 0,
+        type_wholeblood: blood_units,
+        type_platelet: 0,
+        type_plasma: 0,
+        type_other: 0,
+        social_civilian: blood_units * 0.6,
+        social_student: blood_units * 0.3,
+        social_policearmy: blood_units * 0.1,
+        don_new: don_new,
+        don_reg: don_reg,
+        don_irreg: Math.max(0, blood_units - don_new - don_reg)
+      };
+
+      const res = await fetch("http://localhost:5000/predict_blood_types", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      document.getElementById("result").innerHTML =
+        `🩸 <strong>Predicted Blood Units:</strong><br>
+         🔴 Blood A: ${data.blood_a}<br>
+         🟡 Blood B: ${data.blood_b}<br>
+         ⚪ Blood O: ${data.blood_o}<br>
+         🟣 Blood AB: ${data.blood_ab}`;
+    }
+  </script>
+
+</body>
+</html>
