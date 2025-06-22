@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blood Donation Predictor</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    label, input, select { display: block; margin-top: 10px; }
+    button { margin-top: 20px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🩸 Blood Donation Predictor</h1>
+
+  <label>State:</label>
+  <select id="state">
+    <option value="Johor">Johor</option>
+    <option value="Selangor">Selangor</option>
+    <option value="Penang">Penang</option>
+    <option value="Sabah">Sabah</option>
+  </select>
+
+  <label>Date:</label>
+  <input type="date" id="date">
+
+  <label>Total Blood Units Collected:</label>
+  <input type="number" id="blood_units" min="1" value="50">
+
+  <label>New Donors (optional):</label>
+  <input type="number" id="don_new" min="0" value="15">
+
+  <label>Regular Donors (optional):</label>
+  <input type="number" id="don_reg" min="0" value="30">
+
+  <button onclick="predict()">Predict</button>
+
+  <h2 id="result"></h2>
+
+  <script>
+    async function predict() {
+      const state = document.getElementById('state').value;
+      const date = new Date(document.getElementById('date').value);
+      const blood_units = parseInt(document.getElementById('blood_units').value);
+      const don_new = parseInt(document.getElementById('don_new').value) || 0;
+      const don_reg = parseInt(document.getElementById('don_reg').value) || 0;
+
+      const payload = {
+        state: state,
+        month: date.getMonth() + 1,
+        weekday: date.getDay(),
+        blood_units: blood_units,
+        don_new: don_new,
+        don_reg: don_reg,
+         month: date.getMonth() + 1,
+         day: date.getDate(),
+         weekday: date.getDay()
+      };
+
+      const res = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      document.getElementById('result').innerText = "🔮 Predicted Daily Donations: " + data.prediction;
+    }
+  </script>
+</body>
+</html>
