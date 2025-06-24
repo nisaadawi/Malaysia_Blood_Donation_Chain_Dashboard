@@ -2,15 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blood Type Demand Predictor</title>
+  <title>Blood Donation Chain Dashboard</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
+      background: linear-gradient(to bottom, #fa96a1 0%, #ffffff 100%);
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
     }
-    h1 { color: crimson; }
+    .main-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 40px 60px 30px 60px;
+    }
+    .main-title {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #2b2b6e;
+      margin-bottom: 8px;
+      text-align: center;
+      margin-top: 0;
+    }
+    .main-desc {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 30px;
+      gap: 0;
+    }
+    .tab {
+      padding: 16px 40px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      outline: none;
+      font-size: 1.1em;
+      color: #888;
+      border-bottom: 4px solid transparent;
+      font-weight: 500;
+      transition: color 0.2s, border-bottom 0.2s, background 0.2s;
+    }
+    .tab.active {
+      color: #d72660;
+      border-bottom: 4px solid #d72660;
+      background: #f7e9f0;
+      font-weight: bold;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .tab-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 40px 60px 30px 60px;
+      margin-top: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 { color: crimson; text-align: center; }
     label, input, select {
       display: block;
       margin-top: 10px;
@@ -32,52 +90,124 @@
       font-size: 20px;
       color: darkgreen;
     }
+    .powerbi-iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      margin-top: 10px;
+    }
+    .header-bar {
+      background: #ffe3ea;
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      top: 0;
+      z-index: 100;
+    }
+    .header-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #c2185b;
+      margin-left: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-actions {
+      margin-right: 40px;
+      display: flex;
+      gap: 15px;
+    }
+    .header-btn {
+      background: #f8bbd0;
+      color: #c2185b;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .header-btn:hover {
+      background: #f48fb1;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🩸 Blood Type Demand Predictor</h1>
+  <div class="header-bar">
+    <div class="header-title">
+      <span>🩸</span> Blood Donation Chain Dashboard
+    </div>
+  </div>
 
-  <label for="state">State:</label>
-  <select id="state" onchange="updateHospitalOptions()">
-    <option value="">Select State</option>
-    <option value="Johor">Johor</option>
-    <option value="Kedah">Kedah</option>
-    <option value="Kelantan">Kelantan</option>
-    <option value="Melaka">Melaka</option>
-    <option value="Negeri Sembilan">Negeri Sembilan</option>
-    <option value="Pahang">Pahang</option>
-    <option value="Pulau Pinang">Pulau Pinang</option>
-    <option value="Perak">Perak</option>
-    <option value="Selangor">Selangor</option>
-    <option value="Terengganu">Terengganu</option>
-    <option value="Sabah">Sabah</option>
-    <option value="Sarawak">Sarawak</option>
-    <option value="Wilayah Persekutuan (Kuala Lumpur)">Wilayah Persekutuan (Kuala Lumpur)</option>
-  </select>
-
-  <label for="hospital">Hospital:</label>
-  <select id="hospital">
-    <option value="">Select Hospital</option>
-  </select>
-
-  <label for="date">Date:</label>
-  <input type="date" id="date" required>
-
-  <label>Total Blood Units Collected:</label>
-  <input type="number" id="blood_units" min="1" value="50">
-
-  <label>New Donors:</label>
-  <input type="number" id="don_new" min="0" value="15">
-
-  <label>Regular Donors:</label>
-  <input type="number" id="don_reg" min="0" value="30">
-
-  <button onclick="predict()">Predict Blood Demand</button>
-
-  <div id="result"></div>
-
+  <div class="main-container">
+    <div class="tabs">
+      <button class="tab" onclick="showTab('powerbi')" id="tab-powerbi">Power BI Dashboard</button>
+      <button class="tab active" onclick="showTab('predict')" id="tab-predict">Prediction</button>
+    </div>
+    <div class="tab-content active" id="content-predict">
+      <h1>🩸 Blood Type Demand Predictor</h1>
+      <label for="state">State:</label>
+      <select id="state" onchange="updateHospitalOptions()">
+        <option value="">Select State</option>
+        <option value="Johor">Johor</option>
+        <option value="Kedah">Kedah</option>
+        <option value="Kelantan">Kelantan</option>
+        <option value="Melaka">Melaka</option>
+        <option value="Negeri Sembilan">Negeri Sembilan</option>
+        <option value="Pahang">Pahang</option>
+        <option value="Pulau Pinang">Pulau Pinang</option>
+        <option value="Perak">Perak</option>
+        <option value="Selangor">Selangor</option>
+        <option value="Terengganu">Terengganu</option>
+        <option value="Sabah">Sabah</option>
+        <option value="Sarawak">Sarawak</option>
+        <option value="Wilayah Persekutuan (Kuala Lumpur)">Wilayah Persekutuan (Kuala Lumpur)</option>
+      </select>
+      <label for="hospital">Hospital:</label>
+      <select id="hospital">
+        <option value="">Select Hospital</option>
+      </select>
+      <label for="date">Date:</label>
+      <input type="date" id="date" required>
+      <label>Total Blood Units Collected:</label>
+      <input type="number" id="blood_units" min="1" value="50">
+      <label>New Donors:</label>
+      <input type="number" id="don_new" min="0" value="15">
+      <label>Regular Donors:</label>
+      <input type="number" id="don_reg" min="0" value="30">
+      <button onclick="predict()">Predict Blood Demand</button>
+      <div id="result"></div>
+    </div>
+    <div class="tab-content" id="content-powerbi">
+      <h1 class="main-title">Blood Demand & Analytics Dashboard</h1>
+      <div class="main-desc">
+        Comprehensive prediction and visualization of Malaysia's blood donation chain.
+      </div>
+      <iframe class="powerbi-iframe" src="https://app.powerbi.com/view?r=YOUR_EMBED_URL_HERE" allowfullscreen></iframe>
+    </div>
+  </div>
   <script>
+    function showTab(tab) {
+      document.getElementById('content-predict').classList.remove('active');
+      document.getElementById('content-powerbi').classList.remove('active');
+      document.getElementById('tab-predict').classList.remove('active');
+      document.getElementById('tab-powerbi').classList.remove('active');
+      if (tab === 'predict') {
+        document.getElementById('content-predict').classList.add('active');
+        document.getElementById('tab-predict').classList.add('active');
+      } else {
+        document.getElementById('content-powerbi').classList.add('active');
+        document.getElementById('tab-powerbi').classList.add('active');
+      }
+    }
+    // Hospitals by state (from original)
     const hospitalsByState = {
       "Johor": [
         "Hospital Sultanah Nora Ismail",
@@ -128,12 +258,10 @@
         "Pusat Darah Negara"
       ]
     };
-
     function updateHospitalOptions() {
       const state = document.getElementById("state").value;
       const hospitalSelect = document.getElementById("hospital");
       hospitalSelect.innerHTML = ""; // Clear options
-
       if (state && hospitalsByState[state]) {
         hospitalsByState[state].forEach(hospital => {
           const option = document.createElement("option");
@@ -147,7 +275,6 @@
         hospitalSelect.appendChild(defaultOption);
       }
     }
-
     async function predict() {
       const state = document.getElementById("state").value;
       const hospital = document.getElementById("hospital").value;
@@ -155,7 +282,6 @@
       const blood_units = parseInt(document.getElementById("blood_units").value);
       const don_new = parseInt(document.getElementById("don_new").value) || 0;
       const don_reg = parseInt(document.getElementById("don_reg").value) || 0;
-
       const payload = {
         state: state,
         hospital: hospital,
@@ -175,15 +301,12 @@
         don_reg: don_reg,
         don_irreg: Math.max(0, blood_units - don_new - don_reg)
       };
-
       const res = await fetch("http://localhost:5000/predict_blood_types", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-
       const data = await res.json();
-
       document.getElementById("result").innerHTML =
         `🩸 <strong>Predicted Blood Units:</strong><br>
          🔴 Blood A: ${data.blood_a}<br>
@@ -192,6 +315,5 @@
          🟣 Blood AB: ${data.blood_ab}`;
     }
   </script>
-
 </body>
 </html>
