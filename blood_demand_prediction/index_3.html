@@ -2,139 +2,754 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blood Donation Chain Dashboard</title>
+  <title>Malaysia Blood Donation Chain System</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+    
     body {
-      background: linear-gradient(to bottom, #fa96a1 0%, #ffffff 100%);
+      background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 25%, #ffffff 50%, #ffe6e6 75%, #ffcccc 100%);
       margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      position: relative;
     }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" patternUnits="userSpaceOnUse" width="50" height="50"><path d="M25 35c0-5.5 4.5-10 10-10s10 4.5 10 10c0 5.5-10 15-10 15s-10-9.5-10-15z" fill="rgba(255,107,107,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+      pointer-events: none;
+      z-index: -1;
+    }
+    
     .main-container {
-      max-width: 1100px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-      padding: 40px 60px 30px 60px;
+      max-width: 1200px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      box-shadow: 0 20px 60px rgba(220, 20, 60, 0.15), 0 8px 25px rgba(0,0,0,0.1);
+      padding: 30px 40px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
+    
     .main-title {
-      font-size: 2.2em;
-      font-weight: bold;
-      color: #2b2b6e;
-      margin-bottom: 8px;
+      font-size: 2.5em;
+      font-weight: 800;
+      background: linear-gradient(135deg, #dc143c, #ff4757, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
       text-align: center;
       margin-top: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    
     .main-desc {
       text-align: center;
       color: #666;
       margin-bottom: 30px;
-      font-size: 1.1em;
+      font-size: 1.2em;
+      font-weight: 300;
     }
+    
     .tabs {
       display: flex;
       justify-content: center;
-      border-bottom: 2px solid #eee;
+      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+      border-radius: 15px;
+      padding: 8px;
       margin-bottom: 30px;
-      gap: 0;
+      box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
+      gap: 5px;
     }
+    
     .tab {
-      padding: 16px 40px;
+      padding: 15px 30px;
       cursor: pointer;
-      background: none;
+      background: transparent;
       border: none;
       outline: none;
       font-size: 1.1em;
       color: #888;
-      border-bottom: 4px solid transparent;
-      font-weight: 500;
-      transition: color 0.2s, border-bottom 0.2s, background 0.2s;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
-    .tab.active {
-      color: #d72660;
-      border-bottom: 4px solid #d72660;
-      background: #f7e9f0;
-      font-weight: bold;
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .tab-card {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 40px 60px 30px 60px;
-      margin-top: 40px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    h1 { color: crimson; text-align: center; }
-    label, input, select {
-      display: block;
-      margin-top: 10px;
+    
+    .tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
       width: 100%;
-      padding: 8px;
-      font-size: 16px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
     }
+    
+    .tab:hover::before {
+      left: 100%;
+    }
+    
+    .tab.active {
+      color: #fff;
+      background: linear-gradient(135deg, #dc143c, #ff4757);
+      box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .tab-content { 
+      display: none; 
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .tab-content.active { 
+      display: block; 
+    }
+    
+    .predict-flex-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    
+    .predict-card {
+      background: linear-gradient(135deg, #ffffff, #fff8f8);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(220, 20, 60, 0.1), 0 5px 15px rgba(0,0,0,0.08);
+      padding: 40px;
+      width: 400px;
+      min-width: 350px;
+      max-width: 450px;
+      border: 1px solid rgba(220, 20, 60, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .predict-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #dc143c, #ff4757, #ff6b6b);
+    }
+    
+    .result-card {
+      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(220, 20, 60, 0.15), 0 5px 15px rgba(0,0,0,0.08);
+      padding: 40px;
+      width: 350px;
+      min-width: 300px;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1em;
+      min-height: 200px;
+      border: 1px solid rgba(220, 20, 60, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .result-card::before {
+      content: '🩸';
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 2em;
+      opacity: 0.1;
+    }
+    
+    h1 { 
+      color: #dc143c; 
+      text-align: center; 
+      font-size: 1.8em;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 8px;
+      width: 100%;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.95em;
+    }
+    
+    input, select {
+      display: block;
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      background: #fff;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #dc143c;
+      box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+      transform: translateY(-1px);
+    }
+    
     button {
-      margin-top: 20px;
-      padding: 10px;
+      margin-top: 25px;
+      padding: 15px 30px;
       font-size: 18px;
-      background-color: crimson;
+      background: linear-gradient(135deg, #dc143c, #ff4757);
       color: white;
       border: none;
+      border-radius: 12px;
       cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
     }
+    
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    button:hover::before {
+      left: 100%;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(220, 20, 60, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(-1px);
+    }
+    
     #result {
-      margin-top: 30px;
-      font-size: 20px;
-      color: darkgreen;
+      margin-top: 0;
+      font-size: 1.1em;
+      color: #333;
+      text-align: center;
+      line-height: 1.6;
     }
+    
     .powerbi-iframe {
       width: 100%;
       height: 600px;
       border: none;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-      margin-top: 10px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
+    
+    .powerbi-fallback {
+      width: 100%;
+      height: 600px;
+      border: 2px dashed #dc143c;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+      margin-top: 20px;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .powerbi-fallback h3 {
+      color: #dc143c;
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+    
+    .powerbi-fallback p {
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .powerbi-link {
+      background: linear-gradient(135deg, #dc143c, #ff4757);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+    }
+    
+    .powerbi-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+    }
+    
     .header-bar {
-      background: #ffe3ea;
-      padding: 18px 0;
+      background: linear-gradient(135deg, #dc143c, #ff4757);
+      padding: 20px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3);
+      /* position: sticky; */
       top: 0;
       z-index: 100;
+      margin-bottom: 20px;
+      border-radius: 0 0 25px 25px;
     }
+    
     .header-title {
-      font-size: 1.5em;
-      font-weight: bold;
-      color: #c2185b;
+      font-size: 1.6em;
+      font-weight: 800;
+      color: #fff;
       margin-left: 40px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+    
+    .header-logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    
     .header-actions {
       margin-right: 40px;
       display: flex;
       gap: 15px;
     }
+    
     .header-btn {
-      background: #f8bbd0;
-      color: #c2185b;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      padding: 10px 20px;
       font-size: 1em;
       cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
+    
     .header-btn:hover {
-      background: #f48fb1;
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 900px) {
+      .predict-flex-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 25px;
+      }
+      .predict-card, .result-card {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+      .main-container {
+        margin: 10px;
+        padding: 20px;
+      }
+      .header-title {
+        margin-left: 20px;
+        font-size: 1.4em;
+      }
+      .header-actions {
+        margin-right: 20px;
+      }
+    }
+    
+    /* Blood drop animation */
+    @keyframes bloodDrop {
+      0% { transform: translateY(-100px) scale(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(100vh) scale(1); opacity: 0; }
+    }
+    
+    .blood-drop {
+      position: fixed;
+      color: #dc143c;
+      font-size: 20px;
+      pointer-events: none;
+      animation: bloodDrop 3s linear infinite;
+      z-index: -1;
+    }
+    
+    /* Homepage Styles */
+    .hero-section {
+      text-align: center;
+      padding: 60px 40px;
+      background: url('image/national-blood-centre-kuala-lumpur.jpg') center/cover no-repeat;
+      border-radius: 20px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-title {
+      font-size: 3em;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 5px;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.7), 0 2px 4px rgba(0,0,0,0.9);
+      text-align: center;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3em;
+      color: #ffffff;
+      margin-bottom: 30px;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+    
+    .story-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+      align-items: center;
+    }
+    
+    .story-content {
+      padding: 10px;
+    }
+    
+    .story-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #dc143c;
+      margin-bottom: 20px;
+    }
+    
+    .story-text {
+      font-size: 1.1em;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    
+    .story-image {
+      background: url('image/blood-donation.jpg') center/cover no-repeat;
+      border-radius: 20px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 4em;
+      box-shadow: 0 15px 35px rgba(220, 20, 60, 0.2);
+    }
+    
+    .stats-section {
+      background: linear-gradient(135deg, #ffffff, #fff8f8);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(220, 20, 60, 0.1);
+    }
+    
+    .stats-title {
+      text-align: center;
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #dc143c;
+      margin-bottom: 30px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 30px 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border: 2px solid rgba(220, 20, 60, 0.1);
+    }
+    
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: 800;
+      color: #dc143c;
+      margin-bottom: 10px;
+    }
+    
+    .stat-label {
+      font-size: 1.1em;
+      color: #666;
+      font-weight: 600;
+    }
+    
+    .mission-section {
+      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    
+    .mission-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #dc143c;
+      margin-bottom: 20px;
+    }
+    
+    .mission-text {
+      font-size: 1.2em;
+      line-height: 1.8;
+      color: #555;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .cta-section {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #dc143c, #ff4757);
+      border-radius: 20px;
+      color: white;
+    }
+    
+    .cta-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .cta-text {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    .cta-button {
+      background: white;
+      color: #dc143c;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+    }
+    
+    @media (max-width: 768px) {
+      .story-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .hero-title {
+        font-size: 2.2em;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    /* Dataset Tab Styles */
+    .dataset-section {
+      background: linear-gradient(135deg, #ffffff, #fff8f8);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(220, 20, 60, 0.1);
+    }
+    
+    .dataset-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #dc143c;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .dataset-description {
+      font-size: 1.1em;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .dataset-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .info-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border: 2px solid rgba(220, 20, 60, 0.1);
+      text-align: center;
+    }
+    
+    .info-icon {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+    }
+    
+    .info-label {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #dc143c;
+      margin-bottom: 8px;
+    }
+    
+    .info-value {
+      font-size: 1.2em;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    .data-preview {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border: 2px solid rgba(220, 20, 60, 0.1);
+    }
+    
+    .preview-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #dc143c;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
+    
+    .data-table th {
+      background: linear-gradient(135deg, #dc143c, #ff4757);
+      color: white;
+      padding: 12px 8px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    .data-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .data-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    
+    .data-table tr:hover {
+      background: #fff5f5;
+    }
+    
+    .download-section {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .download-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #dc143c;
+      margin-bottom: 15px;
+    }
+    
+    .download-text {
+      font-size: 1.1em;
+      color: #666;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    
+    .download-button {
+      background: linear-gradient(135deg, #dc143c, #ff4757);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .download-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(220, 20, 60, 0.4);
     }
   </style>
 </head>
@@ -142,71 +757,330 @@
 
   <div class="header-bar">
     <div class="header-title">
-      <span>🩸</span> Blood Donation Chain Dashboard
+     <img src="image/pdnlogo2.png" alt="Blood Donation Logo" class="header-logo">
+      <span style="font-size: 1.5em;"</span> Malaysia Blood Donation Chain System
     </div>
   </div>
 
   <div class="main-container">
     <div class="tabs">
-      <button class="tab" onclick="showTab('powerbi')" id="tab-powerbi">Power BI Dashboard</button>
-      <button class="tab active" onclick="showTab('predict')" id="tab-predict">Prediction</button>
+      <button class="tab active" onclick="showTab('home')" id="tab-home">🏠 Home</button>
+      <button class="tab" onclick="showTab('powerbi')" id="tab-powerbi">📊 Power BI Dashboard</button>
+      <button class="tab" onclick="showTab('predict')" id="tab-predict">🔮 Prediction</button>
+      <button class="tab" onclick="showTab('dataset')" id="tab-dataset">📁 Dataset</button>
     </div>
-    <div class="tab-content active" id="content-predict">
-      <h1>🩸 Blood Type Demand Predictor</h1>
-      <label for="state">State:</label>
-      <select id="state" onchange="updateHospitalOptions()">
-        <option value="">Select State</option>
-        <option value="Johor">Johor</option>
-        <option value="Kedah">Kedah</option>
-        <option value="Kelantan">Kelantan</option>
-        <option value="Melaka">Melaka</option>
-        <option value="Negeri Sembilan">Negeri Sembilan</option>
-        <option value="Pahang">Pahang</option>
-        <option value="Pulau Pinang">Pulau Pinang</option>
-        <option value="Perak">Perak</option>
-        <option value="Selangor">Selangor</option>
-        <option value="Terengganu">Terengganu</option>
-        <option value="Sabah">Sabah</option>
-        <option value="Sarawak">Sarawak</option>
-        <option value="Wilayah Persekutuan (Kuala Lumpur)">Wilayah Persekutuan (Kuala Lumpur)</option>
-      </select>
-      <label for="hospital">Hospital:</label>
-      <select id="hospital">
-        <option value="">Select Hospital</option>
-      </select>
-      <label for="date">Date:</label>
-      <input type="date" id="date" required>
-      <label>Total Blood Units Collected:</label>
-      <input type="number" id="blood_units" min="1" value="50">
-      <label>New Donors:</label>
-      <input type="number" id="don_new" min="0" value="15">
-      <label>Regular Donors:</label>
-      <input type="number" id="don_reg" min="0" value="30">
-      <button onclick="predict()">Predict Blood Demand</button>
-      <div id="result"></div>
+    <div class="tab-content active" id="content-home">
+      <div class="hero-section">
+        <div class="hero-content">
+          <h1 class="hero-title">🩸 Pusat Darah Negara</h1>
+          <p class="hero-subtitle">Malaysia's National Blood Centre</p>
+          <p class="hero-subtitle">Saving Lives Through Blood Donation</p>
+        </div>
+      </div>
+      
+      <div class="story-section">
+        <div class="story-content">
+          <h2 class="story-title"> About The System</h2>
+          <p class="story-text">
+            The Malaysia Blood Donation Chain Dashboard is more than just a reporting tool but it’s a strategic asset for saving lives. This platform empowers you to make informed decisions that enhance the reliability and sustainability of Malaysia’s blood supply chain. Explore the data, uncover trends, and join the mission to build a healthier, more resilient nation. Setiap titisan darah menyelamatkan nyawa—every drop counts!🩸💪
+          </p>
+          <p class="story-text">
+            Our Daily Blood Demand Prediction model leverages historical donation data, seasonal trends, and demographic factors to forecast blood needs with precision. By analyzing patterns from hospitals like Pusat Darah Negara and state blood banks, the system anticipates daily demand for each blood type (A, B, O, AB), accounting for variables such as frequencies, trends and analysis of blood demand from 10 years back (2015 until  May 2025)
+          </p>
+        </div>
+        <div class="story-image">
+        </div>
+      </div>
+      
+      
+      <div class="stats-section">
+        <h2 class="stats-title">Malaysia's Blood Donation Impact</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">2.5M+</div>
+            <div class="stat-label">Blood Units Collected</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">500K+</div>
+            <div class="stat-label">Regular Donors</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">150+</div>
+            <div class="stat-label">Hospitals Served</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Safety Rate</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mission-section">
+        <h2 class="mission-title">Our Mission</h2>
+        <p class="mission-text">
+          To ensure a safe, adequate, and sustainable blood supply for Malaysia through 
+          excellence in blood collection, processing, testing, and distribution. We strive 
+          to maintain the highest standards of quality and safety while promoting voluntary 
+          blood donation as a life-saving act of compassion.
+        </p>
+      </div>
+      
+      <!-- <div class="story-section">
+        <div class="story-image">
+          🚚
+        </div>
+        <div class="story-content">
+          <h2 class="story-title">Blood Donation Chain</h2>
+          <p class="story-text">
+            Malaysia's blood donation chain is a comprehensive network that spans from 
+            donor recruitment to patient transfusion. The process begins with voluntary 
+            blood donation at PDN and mobile blood donation drives across the country.
+          </p>
+          <p class="story-text">
+            Collected blood undergoes rigorous testing for infectious diseases, blood 
+            grouping, and compatibility. Once cleared, blood units are distributed to 
+            hospitals nationwide through a sophisticated logistics network, ensuring 
+            timely delivery to patients in need.
+          </p>
+        </div>
+      </div> -->
+      
+      <div class="cta-section">
+        <h2 class="cta-title">Be a Life Saver Today</h2>
+        <p class="cta-text">
+          Your blood donation can save up to 3 lives. Join thousands of Malaysians 
+          who donate blood regularly and make a difference in someone's life.
+        </p>
+        <button class="cta-button" onclick="showTab('predict')">🔮 Try Our Prediction Tool</button>
+      </div>
+    </div>
+    <div class="tab-content" id="content-predict">
+      <div class="predict-flex-container">
+        <div class="predict-card">
+          <h1>🩸 Blood Type Demand Predictor</h1>
+          <label for="state">📍 State:</label>
+          <select id="state" onchange="updateHospitalOptions()">
+            <option value="">Select State</option>
+            <option value="Johor">Johor</option>
+            <option value="Kedah">Kedah</option>
+            <option value="Kelantan">Kelantan</option>
+            <option value="Melaka">Melaka</option>
+            <option value="Negeri Sembilan">Negeri Sembilan</option>
+            <option value="Pahang">Pahang</option>
+            <option value="Pulau Pinang">Pulau Pinang</option>
+            <option value="Perak">Perak</option>
+            <option value="Selangor">Selangor</option>
+            <option value="Terengganu">Terengganu</option>
+            <option value="Sabah">Sabah</option>
+            <option value="Sarawak">Sarawak</option>
+            <option value="Wilayah Persekutuan (Kuala Lumpur)">Wilayah Persekutuan (Kuala Lumpur)</option>
+          </select>
+          <label for="hospital">🏥 Hospital:</label>
+          <select id="hospital">
+            <option value="">Select Hospital</option>
+          </select>
+          <label for="date">📅 Date:</label>
+          <input type="date" id="date" required>
+          <label>💉 Total Blood Units Collected:</label>
+          <input type="number" id="blood_units" min="1" value="50">
+          <label>🆕 New Donors:</label>
+          <input type="number" id="don_new" min="0" value="15">
+          <label>🔄 Regular Donors:</label>
+          <input type="number" id="don_reg" min="0" value="30">
+          <button onclick="predict()">🔮 Predict Blood Demand</button>
+        </div>
+        <div class="result-card">
+          <div id="result">Prediction result will appear here</div>
+        </div>
+      </div>
     </div>
     <div class="tab-content" id="content-powerbi">
-      <h1 class="main-title">Blood Demand & Analytics Dashboard</h1>
+      <h1 class="main-title">Blood Demand & Analytics Dashboard </h1>
+      <h1 class="main-title">2015-2025 </h1>
       <div class="main-desc">
         Comprehensive prediction and visualization of Malaysia's blood donation chain.
       </div>
-      <iframe class="powerbi-iframe" src="https://app.powerbi.com/view?r=YOUR_EMBED_URL_HERE" allowfullscreen></iframe>
+      <div id="powerbi-container">
+        <iframe class="powerbi-iframe" 
+                title="Data_Darah_Dashboasrd"
+                src="https://app.powerbi.com/reportEmbed?reportId=b2f5fa94-a70d-400f-bd99-2ce0000d221a&autoAuth=true&ctid=d494e113-528e-40ab-90d9-162de2fca3f3"
+                frameborder="0"
+                allowFullScreen="true"
+                onload="handleIframeLoad()"
+                onerror="handleIframeError()">
+        </iframe>
+        <div class="powerbi-fallback" id="powerbi-fallback" style="display: none;">
+          <h3>📊 Power BI Dashboard</h3>
+          <p>Unable to load the embedded dashboard. This could be due to:</p>
+          <ul style="text-align: left; color: #666; margin-bottom: 20px;">
+            <li>Authentication requirements</li>
+            <li>Report permissions</li>
+            <li>Network connectivity</li>
+            <li>Report not published publicly</li>
+          </ul>
+          <a href="https://app.powerbi.com/reportEmbed?reportId=b2f5fa94-a70d-400f-bd99-2ce0000d221a&autoAuth=true&ctid=d494e113-528e-40ab-90d9-162de2fca3f3" 
+             target="_blank" 
+             class="powerbi-link">
+            🔗 Open Dashboard in New Tab
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="content-dataset">
+      <div class="dataset-section">
+        <h2 class="dataset-title">📊 Blood Donation Dataset</h2>
+        <p class="dataset-description">
+          This dataset contains comprehensive blood donation data from Malaysia's blood centres, 
+          including donation patterns, blood type distributions, and demographic information 
+          used for our prediction models and analytics dashboard.
+        </p>
+        
+        <div class="dataset-info">
+          <div class="info-card">
+            <div class="info-icon">📅</div>
+            <div class="info-label">Time Period</div>
+            <div class="info-value">2020 - 2025</div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">🏥</div>
+            <div class="info-label">Blood Centres</div>
+            <div class="info-value">15+ Locations</div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">📊</div>
+            <div class="info-label">Records</div>
+            <div class="info-value">50,000+ Entries</div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">🩸</div>
+            <div class="info-label">Blood Types</div>
+            <div class="info-value">A, B, O, AB</div>
+          </div>
+        </div>
+        
+        <div class="data-preview">
+          <h3 class="preview-title">📋 Sample Data Preview</h3>
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>State</th>
+                  <th>Hospital</th>
+                  <th>Blood Type</th>
+                  <th>Units</th>
+                  <th>Donor Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2023-01-15</td>
+                  <td>Selangor</td>
+                  <td>Hospital Tengku Ampuan Rahimah</td>
+                  <td>A</td>
+                  <td>45</td>
+                  <td>Regular</td>
+                </tr>
+                <tr>
+                  <td>2023-01-15</td>
+                  <td>Selangor</td>
+                  <td>Hospital Tengku Ampuan Rahimah</td>
+                  <td>B</td>
+                  <td>38</td>
+                  <td>New</td>
+                </tr>
+                <tr>
+                  <td>2023-01-15</td>
+                  <td>Selangor</td>
+                  <td>Hospital Tengku Ampuan Rahimah</td>
+                  <td>O</td>
+                  <td>52</td>
+                  <td>Regular</td>
+                </tr>
+                <tr>
+                  <td>2023-01-15</td>
+                  <td>Selangor</td>
+                  <td>Hospital Tengku Ampuan Rahimah</td>
+                  <td>AB</td>
+                  <td>12</td>
+                  <td>New</td>
+                </tr>
+                <tr>
+                  <td>2023-01-16</td>
+                  <td>Johor</td>
+                  <td>Hospital Sultanah Aminah</td>
+                  <td>A</td>
+                  <td>41</td>
+                  <td>Regular</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="download-section">
+          <h3 class="download-title">📥 Download Dataset</h3>
+          <p class="download-text">
+            Get the complete blood donation dataset used in our analysis and prediction models. 
+            The CSV file contains detailed information about blood donations across Malaysia 
+            from 2015 to 2025, including location, blood type, donor information, and more.
+          </p>
+          <a href="dataset/data_darah_2015_2025_edited.csv" 
+             download="malaysia_blood_donation_data.csv" 
+             class="download-button">
+            📁 Download CSV File
+          </a>
+        </div>
+      </div>
     </div>
   </div>
+  
   <script>
+    // Create floating blood drops effect
+    function createBloodDrops() {
+      const drops = ['🩸', '💉', '❤️'];
+      setInterval(() => {
+        const drop = document.createElement('div');
+        drop.className = 'blood-drop';
+        drop.textContent = drops[Math.floor(Math.random() * drops.length)];
+        drop.style.left = Math.random() * 100 + 'vw';
+        drop.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(drop);
+        
+        setTimeout(() => {
+          drop.remove();
+        }, 3000);
+      }, 2000);
+    }
+    
+    // Start blood drops animation
+    createBloodDrops();
+    
     function showTab(tab) {
+      document.getElementById('content-home').classList.remove('active');
       document.getElementById('content-predict').classList.remove('active');
       document.getElementById('content-powerbi').classList.remove('active');
+      document.getElementById('content-dataset').classList.remove('active');
+      document.getElementById('tab-home').classList.remove('active');
       document.getElementById('tab-predict').classList.remove('active');
       document.getElementById('tab-powerbi').classList.remove('active');
-      if (tab === 'predict') {
+      document.getElementById('tab-dataset').classList.remove('active');
+      
+      if (tab === 'home') {
+        document.getElementById('content-home').classList.add('active');
+        document.getElementById('tab-home').classList.add('active');
+      } else if (tab === 'predict') {
         document.getElementById('content-predict').classList.add('active');
         document.getElementById('tab-predict').classList.add('active');
-      } else {
+      } else if (tab === 'powerbi') {
         document.getElementById('content-powerbi').classList.add('active');
         document.getElementById('tab-powerbi').classList.add('active');
+      } else if (tab === 'dataset') {
+        document.getElementById('content-dataset').classList.add('active');
+        document.getElementById('tab-dataset').classList.add('active');
       }
     }
+    
     // Hospitals by state (from original)
     const hospitalsByState = {
       "Johor": [
@@ -258,6 +1132,7 @@
         "Pusat Darah Negara"
       ]
     };
+    
     function updateHospitalOptions() {
       const state = document.getElementById("state").value;
       const hospitalSelect = document.getElementById("hospital");
@@ -275,6 +1150,7 @@
         hospitalSelect.appendChild(defaultOption);
       }
     }
+    
     async function predict() {
       const state = document.getElementById("state").value;
       const hospital = document.getElementById("hospital").value;
@@ -282,6 +1158,11 @@
       const blood_units = parseInt(document.getElementById("blood_units").value);
       const don_new = parseInt(document.getElementById("don_new").value) || 0;
       const don_reg = parseInt(document.getElementById("don_reg").value) || 0;
+      const resultDiv = document.getElementById("result");
+      
+      // Show loading state
+      resultDiv.innerHTML = "🔮 Predicting...";
+      
       const payload = {
         state: state,
         hospital: hospital,
@@ -301,19 +1182,44 @@
         don_reg: don_reg,
         don_irreg: Math.max(0, blood_units - don_new - don_reg)
       };
-      const res = await fetch("http://localhost:5000/predict_blood_types", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      document.getElementById("result").innerHTML =
-        `🩸 <strong>Predicted Blood Units:</strong><br>
-         🔴 Blood A: ${data.blood_a}<br>
-         🟡 Blood B: ${data.blood_b}<br>
-         ⚪ Blood O: ${data.blood_o}<br>
-         🟣 Blood AB: ${data.blood_ab}`;
+      
+      try {
+        const res = await fetch("http://localhost:5000/predict_blood_types", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        resultDiv.innerHTML =
+          `🩸 <strong>Predicted Blood Units:</strong><br><br>
+           🔴 Blood A: ${data.blood_a}<br>
+           🟡 Blood B: ${data.blood_b}<br>
+           ⚪ Blood O: ${data.blood_o}<br>
+           🟣 Blood AB: ${data.blood_ab}`;
+      } catch (error) {
+        resultDiv.innerHTML = "❌ An error occurred. Please try again.";
+      }
     }
+    
+    // Power BI iframe handling
+    function handleIframeLoad() {
+      console.log('Power BI iframe loaded successfully');
+      document.getElementById('powerbi-fallback').style.display = 'none';
+    }
+    
+    function handleIframeError() {
+      console.log('Power BI iframe failed to load');
+      document.querySelector('.powerbi-iframe').style.display = 'none';
+      document.getElementById('powerbi-fallback').style.display = 'flex';
+    }
+    
+    // Check if iframe loads within 10 seconds
+    setTimeout(() => {
+      const iframe = document.querySelector('.powerbi-iframe');
+      if (iframe && iframe.contentWindow && iframe.contentWindow.location.href === 'about:blank') {
+        handleIframeError();
+      }
+    }, 10000);
   </script>
 </body>
 </html>
