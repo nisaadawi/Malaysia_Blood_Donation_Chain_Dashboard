@@ -335,7 +335,7 @@
     }
     
     .header-title {
-      font-size: 1.6em;
+      font-size: 1.7em;
       font-weight: 800;
       color: #fff;
       margin-left: 40px;
@@ -375,6 +375,15 @@
       background: rgba(255, 255, 255, 0.3);
       border-color: rgba(255, 255, 255, 0.5);
       transform: translateY(-2px);
+    }
+    
+    .header-data-range {
+      margin-right: 40px;
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      letter-spacing: 1px;
     }
     
     @media (max-width: 900px) {
@@ -640,7 +649,7 @@
     
     .info-card {
       background: white;
-      padding: 25px;
+      padding: 15px;
       border-radius: 15px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.08);
       border: 2px solid rgba(220, 20, 60, 0.1);
@@ -758,8 +767,9 @@
   <div class="header-bar">
     <div class="header-title">
      <img src="image/pdnlogo2.png" alt="Blood Donation Logo" class="header-logo">
-      <span style="font-size: 1.5em;"</span> Malaysia Blood Donation Chain System
+      <span style="font-size: 1.7em;"></span> Malaysia Blood Donation Chain System
     </div>
+    <div class="header-data-range">Data from 2015-2025</div>
   </div>
 
   <div class="main-container">
@@ -782,7 +792,7 @@
         <div class="story-content">
           <h2 class="story-title"> About The System</h2>
           <p class="story-text">
-            The Malaysia Blood Donation Chain Dashboard is more than just a reporting tool but it’s a strategic asset for saving lives. This platform empowers you to make informed decisions that enhance the reliability and sustainability of Malaysia’s blood supply chain. Explore the data, uncover trends, and join the mission to build a healthier, more resilient nation. Setiap titisan darah menyelamatkan nyawa—every drop counts!🩸💪
+            The Malaysia Blood Donation Chain Dashboard is more than just a reporting tool but it's a strategic asset for saving lives. This platform empowers you to make informed decisions that enhance the reliability and sustainability of Malaysia's blood supply chain. Explore the data, uncover trends, and join the mission to build a healthier, more resilient nation. Setiap titisan darah menyelamatkan nyawa—every drop counts!🩸💪
           </p>
           <p class="story-text">
             Our Daily Blood Demand Prediction model leverages historical donation data, seasonal trends, and demographic factors to forecast blood needs with precision. By analyzing patterns from hospitals like Pusat Darah Negara and state blood banks, the system anticipates daily demand for each blood type (A, B, O, AB), accounting for variables such as frequencies, trends and analysis of blood demand from 10 years back (2015 until  May 2025)
@@ -825,25 +835,6 @@
         </p>
       </div>
       
-      <!-- <div class="story-section">
-        <div class="story-image">
-          🚚
-        </div>
-        <div class="story-content">
-          <h2 class="story-title">Blood Donation Chain</h2>
-          <p class="story-text">
-            Malaysia's blood donation chain is a comprehensive network that spans from 
-            donor recruitment to patient transfusion. The process begins with voluntary 
-            blood donation at PDN and mobile blood donation drives across the country.
-          </p>
-          <p class="story-text">
-            Collected blood undergoes rigorous testing for infectious diseases, blood 
-            grouping, and compatibility. Once cleared, blood units are distributed to 
-            hospitals nationwide through a sophisticated logistics network, ensuring 
-            timely delivery to patients in need.
-          </p>
-        </div>
-      </div> -->
       
       <div class="cta-section">
         <h2 class="cta-title">Be a Life Saver Today</h2>
@@ -898,7 +889,7 @@
       <h1 class="main-title">Blood Demand & Analytics Dashboard </h1>
       <h1 class="main-title">2015-2025 </h1>
       <div class="main-desc">
-        Comprehensive prediction and visualization of Malaysia's blood donation chain.
+        Comprehensive visualization of Malaysia's blood donation chain.
       </div>
       <div id="powerbi-container">
         <iframe class="powerbi-iframe" 
@@ -1025,7 +1016,7 @@
             The CSV file contains detailed information about blood donations across Malaysia 
             from 2015 to 2025, including location, blood type, donor information, and more.
           </p>
-          <a href="dataset/data_darah_2015_2025_edited.csv" 
+          <a href="data_darah_2015_2025_edited.csv" 
              download="malaysia_blood_donation_data.csv" 
              class="download-button">
             📁 Download CSV File
