@@ -2,14 +2,29 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
 
-# 1. Define the app first
+# Define the app
 app = Flask(__name__)
 CORS(app)
 
-# 2. Optional: Your state mapping
-state_mapping = {"Johor": 0, "Selangor": 1, "Penang": 2, "Sabah": 3}
+# 2. State mapping
+state_mapping = {
+    "Johor": 0,
+    "Kedah": 1,
+    "Kelantan": 2,
+    "Melaka": 3,
+    "Negeri Sembilan": 4,
+    "Pahang": 5,
+    "Penang": 6,
+    "Perak": 7,
+    "Perlis": 8,
+    "Sabah": 9,
+    "Sarawak": 10,
+    "Selangor": 11,
+    "Terengganu": 12,
+    "Wilayah Persekutuan Kuala Lumpur": 13,
+}
 
-# 3. Then define your routes
+# Define your routes
 @app.route('/predict_blood_types', methods=['POST'])
 def predict_blood_types():
     data = request.get_json()
